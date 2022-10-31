@@ -27,7 +27,7 @@ eureka:
 ```java
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/first-service")
 public class FirstServiceController {
 
     @GetMapping("/welcome")
@@ -37,7 +37,7 @@ public class FirstServiceController {
 
 }
 ```
-- `http://localhost:8081/welcome`
+- `http://localhost:8081/first-service/welcome`
 - 간단하게 first-Service의 api임을 확인할 수 있게 작성함
 
 ---

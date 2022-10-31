@@ -26,7 +26,7 @@ eureka:
 ## 컨트롤러
 ```java
 @RestController
-@RequestMapping("/")
+@RequestMapping("/second-service")
 public class SecondServiceController {
 
     @GetMapping("/welcome")
@@ -36,7 +36,7 @@ public class SecondServiceController {
 
 }
 ```
-- `http://localhost:8082/welcome`
+- `http://localhost:8082/second-service/welcome`
 - 간단하게 second-service 의 api임을 확인할 수 있게 작성함
 
 ---
