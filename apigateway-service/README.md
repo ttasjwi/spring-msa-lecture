@@ -48,3 +48,33 @@ spring:
 - 기존 서비스들이 Zuul을 사용했었다면, 이에 맞춰 해당 서비스들의 맵핑 url을 변경해야한다.
 
 ---
+
+## java 코드로 Gateway Route 정의 및 Filter 등록
+```java
+
+@Slf4j
+@Configuration
+public class FilterConfig {
+
+    @Bean
+    public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("first-service",
+                        request -> request.path("/first-service/**")
+                                        .filters(filters -> filters.addRequestHeader("first-request", "first-request-header-value")
+                                                                    .addResponseHeader("first-response", "first-response-header-value"))
+                                        .uri("http://localhost:8081"))
+                .route("second-service",
+                        request -> request.path("/second-service/**")
+                                        .filters(filters -> filters.addRequestHeader("second-request", "second-request-header-value")
+                                                                    .addResponseHeader("second-response", "second-response-header-value"))
+                                        .uri("http://localhost:8082"))
+                .build();
+    }
+}
+```
+- 위의 yml에서 `cloud.gateway.routes` 부분 주석처리해야한다.
+- 자바코드로 RouteLocator를 build한 뒤 스프링 빈으로 등록할 있다.
+- 고유한 id, 매칭 조건, 필터(사전/사후), 목적 uri를 지정할 수 있다.
+
+---

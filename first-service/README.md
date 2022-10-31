@@ -23,9 +23,9 @@ eureka:
 
 ---
 
-## 컨트롤러
+## Controller
 ```java
-
+@Slf4j
 @RestController
 @RequestMapping("/first-service")
 public class FirstServiceController {
@@ -35,9 +35,15 @@ public class FirstServiceController {
         return "Welcome to the First Service";
     }
 
+
+    @GetMapping("/message")
+    public String message(@RequestHeader("first-request") String headerValue) {
+        log.info("first-request-header : {}", headerValue);
+        return "Hello world in First Service.";
+    }
 }
 ```
-- `http://localhost:8081/first-service/welcome`
-- 간단하게 first-Service의 api임을 확인할 수 있게 작성함
+- `/welcome` : 간단하게 first-service 의 api임을 확인할 수 있게 작성함
+- `/message` : API 게이트웨이의 사전 필터에서 추가된 header를 확인하기 위함
 
 ---
