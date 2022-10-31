@@ -7,5 +7,6 @@
 - `user-service` : 사용자 서비스
 - `zuul-service` : API 게이트웨이
   - 2.4 이전에 쓰였고, 현재는 Maintenance 상태. => 이후 Spring Cloud Gateway 사용 권장
+- `first-service` : API 게이트웨이를 거쳐 실제 호출되는 서비스(API 게이트웨이 실습)
 
 ---
