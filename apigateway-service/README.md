@@ -212,3 +212,76 @@ spring:
 - args에서 Config의 인자들을 지정할 수 있다.
 
 ---
+
+## Logging Filter
+```java
+
+@Slf4j
+@Component
+public class LoggingFilter extends AbstractGatewayFilterFactory<LoggingFilter.Config> {
+
+    public LoggingFilter() {
+        super(Config.class);
+    }
+
+    @Data
+    public static class Config {
+        private String baseMessage;
+        private boolean preLogger;
+        private boolean postLogger;
+
+    }
+
+    @Override
+    public GatewayFilter apply(Config config) {
+        GatewayFilter filter = new OrderedGatewayFilter(
+                (exchange, chain) -> {
+                    ServerHttpRequest request = exchange.getRequest();
+                    ServerHttpResponse response = exchange.getResponse();
+
+                    log.info("Logging Filter baseMessage : {}", config.getBaseMessage());
+
+                    if (config.isPreLogger()) {
+                        log.info("Logging PRE Filter : request id = {}", request.getId());
+                    }
+
+                    return chain
+                            .filter(exchange)
+                            .then(Mono.fromRunnable(() -> {
+                                if (config.isPostLogger()) {
+                                    log.info("Logging Post Filter : response code = {}", response.getStatusCode());
+                                }
+                            }));
+                }
+                , Ordered.HIGHEST_PRECEDENCE);
+
+        return filter;
+    }
+}
+
+```
+- 반환 타입을 람다 방식으로 구현하면 우선순위를 별도로 지정할 수 없는데, OrderedGatewayFilter를 구현체로 하여 작성하면,
+우선순위를 작성자 임의로 정할 수 있다. 이 방식에서는 `Ordered.HIGHEST_PRECEDENCE`를 통해, 제일 upstream에 위치하도록 했다.
+  - 이렇게 하면, 사전 필터 중에서는 제일 먼저 실행되고, 사후 필터 중에서는 제일 마지막에 실행된다.
+
+### application.yml
+```yaml
+        - id: second-service
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/second-service/**
+          filters: # 조건에 부합한다면, 적용할 부가 로직
+#            - AddRequestHeader=second-request, second-request-header-value2
+#            - AddResponseHeader=second-response, second-response-header-value2
+            - name: CustomFilter
+            - name: LoggingFilter
+              args:
+                baseMessage: Hi, there.
+                preLogger: true
+                postLogger: true
+```
+- 복수의 필터를 적용하기 위해서 filters에서 name 필드로 별도로 구분하게 했다.
+- args에서 Filter 생성시 넘길 인자들을 지정할 수 있다.
+- Logging Filter를 Second-Service에만 적용
+
+---
