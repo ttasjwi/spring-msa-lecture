@@ -41,9 +41,16 @@ public class FirstServiceController {
         log.info("first-request-header : {}", headerValue);
         return "Hello world in First Service.";
     }
+
+
+    @GetMapping("/check")
+    public String check() {
+        return "Hi, there. This is a message from First Service.";
+    }
 }
 ```
 - `/welcome` : 간단하게 first-service 의 api임을 확인할 수 있게 작성함
 - `/message` : API 게이트웨이의 사전 필터에서 추가된 header를 확인하기 위함
+- `/check` : API 게이트웨이의 커스텀 필터 적용 확인용
 
 ---
