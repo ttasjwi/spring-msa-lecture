@@ -142,3 +142,73 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
 - 기존 필터를 주석처리하고 CutstomFilter를 그대로 등록했다. 등록된 빈을 찾아서 사용하는 것으로 추정됨
 
 ---
+
+## 글로벌 필터 적용
+```java
+@Slf4j
+@Component
+public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+
+    public GlobalFilter() {
+        super(Config.class);
+    }
+
+    @Getter
+    public static class Config {
+        private final String baseMessage;
+        private final boolean preLogger;
+        private final boolean postLogger;
+
+        public Config(String baseMessage, boolean preLogger, boolean postLogger) {
+            this.baseMessage = baseMessage;
+            this.preLogger = preLogger;
+            this.postLogger = postLogger;
+        }
+    }
+
+    @Override
+    public GatewayFilter apply(Config config) {
+        return (exchange, chain) -> {
+            ServerHttpRequest request = exchange.getRequest();
+            ServerHttpResponse response = exchange.getResponse();
+
+            log.info("Global Filter baseMessage : {}", config.getBaseMessage());
+
+            if (config.isPreLogger()) {
+                log.info("Global Filter Start : request id = {}", request.getId());
+            }
+
+            return chain
+                    .filter(exchange)
+                    .then(Mono.fromRunnable(() -> {
+                        if (config.isPostLogger()) {
+                            log.info("Global Filter End : response code = {}", response.getStatusCode());
+                        }
+                    }));
+
+        };
+    }
+}
+```
+- 위의 방식대로 필터를 만든다.
+- Config 클래스를 만들 때 setter를 열어두거나, 모든 프로퍼티를 정의할 수 있는 생성자를 만들어 사용할 수 있다.
+
+## application.yml
+```yaml
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway GlobalFilter
+            preLogger: true
+            postLogger: true
+```
+- default-filters 에서, 글로벌로 적용할 필터를 지정할 수 있다.
+- 이 필터는 조건에 상관없이 모든 사전 피터 앞, 모든 사후 필터 후에 작동한다.
+- args에서 Config의 인자들을 지정할 수 있다.
+
+---
