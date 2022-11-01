@@ -16,6 +16,9 @@ implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
 
 ## application.yml
 ```yaml
+
+## application.yml을 통해 Filter 등록
+```yaml
 server:
   port: 8000
 
@@ -36,10 +39,16 @@ spring:
           uri: http://localhost:8081/ # 어디로 포워딩
           predicates: # 조건
             - Path=/first-service/** # 주의 : uri 뒤에 붙어서 포워딩 됨. (예: http://localhost:8081/firstservice/** )
+          filters: # 조건에 부합한다면, 적용할 부가 로직
+            - AddRequestHeader=first-request, first-request-header-value2
+            - AddResponseHeader=first-response, first-response-header-value2
         - id: second-service
           uri: http://localhost:8082/
           predicates:
             - Path=/second-service/**
+          filters: # 조건에 부합한다면 적용할 부가 로직
+            - AddRequestHeader=second-request, second-request-header-value2
+            - AddResponseHeader=second-response, second-response-header-value2
 ```
 - 8000번 포트로 바인딩
 - `http://호스트 주소:8000/first-service/**` 요청을 `http://localhost:8081/first-service/**`로 포워딩한다
@@ -49,7 +58,7 @@ spring:
 
 ---
 
-## java 코드로 Gateway Route 정의 및 Filter 등록
+## (참고) java 코드로 Gateway Route 정의 및 Filter 등록
 ```java
 
 @Slf4j
@@ -73,8 +82,9 @@ public class FilterConfig {
     }
 }
 ```
-- 위의 yml에서 `cloud.gateway.routes` 부분 주석처리해야한다.
+- 이 방식을 사용하려면, 위의 yml에서 `cloud.gateway.routes` 부분 주석처리해야한다.
 - 자바코드로 RouteLocator를 build한 뒤 스프링 빈으로 등록할 있다.
 - 고유한 id, 매칭 조건, 필터(사전/사후), 목적 uri를 지정할 수 있다.
+- java 코드로 설정하지 않고 yml로 설정하려면 `@Configuration`, `@Bean` 부분을 주석처리하고 yml로 설정을 등록하면 된다.
 
 ---
