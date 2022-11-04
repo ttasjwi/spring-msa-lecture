@@ -14,12 +14,14 @@ spring:
 
 eureka:
   client:
-    register-with-eureka: false # 유레카에 등록 x
-    fetch-registry: false # 유레카로부터 레지스트리 정보를 주기적으로 fetch 안 함
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 ```
-- 8082번 포트에 바인딩
-- 당장은 유레카 서비스에 등록하지 않을 예정이므로, register-with-eureka 을 false로 함
-- 유레카로부터 레지스트리 정보를 주기적으로 가져오지 않을 것이므로, fetch-registry 을 false로 함
+- 유레카에 등록, 레지스트리를 fetch해옴
+
 
 ---
 
