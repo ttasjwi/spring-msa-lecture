@@ -6,7 +6,7 @@
 ## application.yml
 ```yaml
 server:
-  port: 8082
+  port: 0
 
 spring:
   application:
@@ -18,25 +18,29 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
 ```
+- 매번 랜덤 포트에 바인딩하여 실행하고, 인스턴스 명을 랜덤하게 생성한다.
 - 유레카에 등록, 레지스트리를 fetch해옴
-
 
 ---
 
 ## Controller
 ```java
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/second-service")
 public class SecondServiceController {
+
+    private final Environment env;
 
     @GetMapping("/welcome")
     public String welcome() {
         return "Welcome to the Second Service";
     }
-
 
     @GetMapping("/message")
     public String message(@RequestHeader("second-request") String headerValue) {
@@ -45,13 +49,15 @@ public class SecondServiceController {
     }
 
     @GetMapping("/check")
-    public String check() {
-        return "Hi, there. This is a message from Second Service.";
+    public String check(HttpServletRequest request) {
+        log.info("Server port = {}", request.getServerPort());
+        return String.format(
+                "Hi, there. This is a message from Second Service. %s",
+                env.getProperty("local.server.port")
+        );
     }
 }
 ```
-- `/welcome` : 간단하게 second-service 의 api임을 확인할 수 있게 작성함
-- `/message` : API 게이트웨이의 사전 필터에서 추가된 header를 확인하기 위함
-- `/check` : API 게이트웨이의 커스텀 필터 적용 확인용
+- `/check` : 요청이 들어왔을 때, 서버 포트를 로깅하고 api 응답으로 서버 포트번호를 포함하여 응답한다.
 
 ---
