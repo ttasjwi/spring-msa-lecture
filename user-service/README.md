@@ -1,5 +1,5 @@
 # User-Service
-- 서비스 디스커버리에 등록하는 서비스 샘플
+- 사용자 관련 처리를 담당하는 마이크로 서비스
 
 ---
 
@@ -14,20 +14,22 @@ spring:
 
 eureka:
   instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     register-with-eureka: true # 유레카 서버에 등록할 것인가? -> true
     fetch-registry: true # 유레카 서버로부터 인스턴스들의 정보를 주기적으로 가져올 것인가 -> true
     eureka-service-url:
       defaultZone: http://127.0.0.1:8761/eureka # 유레카 서비스의 위치, 엔드포인트
 
-
+greeting:
+  message: Welcome to the simple E-commerce.
 ```
 - `server.port: 0` : 실행할 때마다 매 번 랜덤 포트에서 실행하도록 한다. (기존에 존재하는 포트와 겹치지 않는다.)
 - `eureka.instance.instance-id` : 인스턴스 각각에게 고유한 식별자를 부여하기 위함. 기본 설정을 사용할 경우,
 `server.port:0`이 문제가 되어 중복 인트턴스로 간주되는 문제가 있다.
 - 유레카 서버에 등록하기 위해, register-with-eureka 옵션을 활성화한다.
 - 다른 인스턴스들의 정보를 주기적으로 가져오기 위해 fetch-registry 옵션을 활성화한다.
+- `greeting.message` : 간단한 인사메시지
 
 ---
 
