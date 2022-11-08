@@ -1,4 +1,4 @@
-package com.ttasjwi.userservice.controller;
+package com.ttasjwi.userservice.web;
 
 import com.ttasjwi.userservice.vo.Greeting;
 import lombok.RequiredArgsConstructor;
