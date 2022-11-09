@@ -15,7 +15,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable(); // csrf 필터 비활성화
-        http.authorizeRequests().antMatchers("/users/**").permitAll(); // /users 아래의 모든 url에 접근 허용
+        http.authorizeRequests().antMatchers("/user-service/users/**").permitAll(); // /users 아래의 모든 url에 접근 허용
         http.headers().frameOptions().disable(); // h2-console html의 프레임별로 데이터가 나누어져 있는 문제. 이를 무시함. h2-console 접근 불가 문제
     }
 }
