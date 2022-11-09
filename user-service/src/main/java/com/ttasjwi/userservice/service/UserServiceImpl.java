@@ -4,6 +4,7 @@ import com.ttasjwi.userservice.repository.UserEntity;
 import com.ttasjwi.userservice.repository.UserRepository;
 import com.ttasjwi.userservice.service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,12 +14,14 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public UserDto createUser(UserDto userCreateDto) {
 
         String userId = UUID.randomUUID().toString();
-        String encryptedPassword = "encrypted_password";
+        String encryptedPassword = passwordEncoder.encode(userCreateDto.getPassword());
         userCreateDto.setUserId(userId);
         userCreateDto.setEncryptedPassword(encryptedPassword);
 
