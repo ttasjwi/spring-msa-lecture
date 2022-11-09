@@ -30,21 +30,25 @@ spring:
             preLogger: true
             postLogger: true
       routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
         - id: first-service
           uri: lb://MY-FIRST-SERVICE
-          predicates: # 조건
-            - Path=/first-service/** # 주의 : uri 뒤에 붙어서 포워딩 됨. (예: http://localhost:8081/firstservice/** )
+          predicates:
+            - Path=/first-service/**
           filters: # 조건에 부합한다면, 적용할 부가 로직
-#            - AddRequestHeader=first-request, first-request-header-value2
-#            - AddResponseHeader=first-response, first-response-header-value2
+            #            - AddRequestHeader=first-request, first-request-header-value2
+            #            - AddResponseHeader=first-response, first-response-header-value2
             - CustomFilter
         - id: second-service
           uri: lb://MY-SECOND-SERVICE
           predicates:
             - Path=/second-service/**
           filters: # 조건에 부합한다면, 적용할 부가 로직
-#            - AddRequestHeader=second-request, second-request-header-value2
-#            - AddResponseHeader=second-response, second-response-header-value2
+            #            - AddRequestHeader=second-request, second-request-header-value2
+            #            - AddResponseHeader=second-response, second-response-header-value2
             - name: CustomFilter
             - name: LoggingFilter
               args:
