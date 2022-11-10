@@ -1,13 +1,15 @@
 package com.ttasjwi.userservice.service.dto;
 
 
-import com.ttasjwi.userservice.repository.UserEntity;
+import com.ttasjwi.userservice.domain.UserEntity;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
+@Getter
 public class UserDto {
 
     private String userId;
@@ -15,6 +17,7 @@ public class UserDto {
     private String email;
     private String password;
     private String encryptedPassword;
+    private final List<OrderDto> orders = new ArrayList<>();
     private LocalDate createdAt;
 
     @Builder
@@ -38,5 +41,17 @@ public class UserDto {
                 .email(email)
                 .encryptedPassword(encryptedPassword)
                 .build();
+    }
+
+    public void initUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void initEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    public void addOrderDtos(List<OrderDto> orders) {
+        this.orders.addAll(orders);
     }
 }

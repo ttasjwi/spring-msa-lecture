@@ -1,4 +1,4 @@
-package com.ttasjwi.userservice.repository;
+package com.ttasjwi.userservice.domain;
 
 import lombok.Builder;
 import lombok.Getter;
