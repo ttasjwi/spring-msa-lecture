@@ -5,7 +5,7 @@ import com.ttasjwi.userservice.domain.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class UserDto {
     private String password;
     private String encryptedPassword;
     private final List<OrderDto> orders = new ArrayList<>();
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Builder
     public UserDto(String name, String email, String password) {

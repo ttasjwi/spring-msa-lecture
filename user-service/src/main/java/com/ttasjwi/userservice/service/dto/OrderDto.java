@@ -2,7 +2,7 @@ package com.ttasjwi.userservice.service.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class OrderDto {
@@ -11,7 +11,7 @@ public class OrderDto {
     private Integer quantity;
     private Integer unitPrice; // 단가
     private Integer totalPrice;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private String orderId;
 
 }
