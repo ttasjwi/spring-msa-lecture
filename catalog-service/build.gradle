@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.1'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // 테스트에서 lombok 사용
     testCompileOnly 'org.projectlombok:lombok'
