@@ -2,9 +2,12 @@ package com.ttasjwi.userservice.service;
 
 import com.ttasjwi.userservice.domain.UserEntity;
 import com.ttasjwi.userservice.domain.UserRepository;
+import com.ttasjwi.userservice.security.SecurityUser;
 import com.ttasjwi.userservice.service.dto.OrderDto;
 import com.ttasjwi.userservice.service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,5 +61,12 @@ public class UserServiceImpl implements UserService {
                 .map(UserDto::new)
                 .collect(Collectors.toList());
         return results;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+        return new SecurityUser(userEntity);
     }
 }
